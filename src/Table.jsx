@@ -1,30 +1,41 @@
 import { Fragment, useReducer } from "react";
+import produce from "immer";
 
 export default function Table({ data = [] }) {
   const initialState = {
     data: data,
     sorts: {},
     filters: {
-      name: "",
+      name: null,
       date: null,
-      ad: "",
-      field: "",
+      title: null,
+      field: null,
     },
   };
   const reducer = (state, action) => {
     switch (action.type) {
-      case 'FILTER': {
-        return { ...state, filters: {...state.filters, [action.name]: action.value} };
+      case "FILTER": {
+        const newFilters = {...state.filters, [action.name]: action.value || null}
+        return {
+          ...state,
+          filters: newFilters,
+          data: data.filter(item => {
+            return  Object.entries(newFilters).filter(f => f[1] != null).reduce((all, curr) => {
+              return all && item[curr[0]].toLowerCase().indexOf(curr[1].toLowerCase()) > -1
+            }, true);
+          })
+        }
       }
       default:
         return state;
     }
   };
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state);
+
+  console.log(state)
   return (
     <Fragment>
-      <article style={{ display: "flex" }}>
+      <div style={{ display: "flex" }}>
         <section style={{ display: "flex", flexDirection: "column" }}>
           <label htmlFor="name">نام</label>
           <input
@@ -58,16 +69,16 @@ export default function Table({ data = [] }) {
           />
         </section>
         <section style={{ display: "flex", flexDirection: "column" }}>
-          <label htmlFor="post">آگهی</label>
+          <label htmlFor="title">نام آگهی</label>
           <input
             type="text"
-            name="ad"
-            id="ad"
+            name="title"
+            id="title"
             value={state.ad}
             onChange={(e) =>
               dispatch({
                 type: "FILTER",
-                name: "ad",
+                name: "title",
                 value: e.target.value,
               })
             }
@@ -89,13 +100,13 @@ export default function Table({ data = [] }) {
             }
           />
         </section>
-      </article>
+      </div>
       <table>
         <thead>
           <tr>
             <th>نام</th>
             <th>تاریخ</th>
-            <th>آگهی</th>
+            <th>نام آگهی</th>
             <th>فیلد</th>
             <th>مقدار قدیمی</th>
             <th>مقدار جدید</th>
