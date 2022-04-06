@@ -34,11 +34,6 @@ function sortAndFilter(array, sorts, filters) {
       );
     }
   });
-  // out = out.filter(item => {
-  //   return  filters.reduce((all, curr) => {
-  //     return all && item[curr[0]].toLowerCase().indexOf(curr[1].toLowerCase()) > -1
-  //   }, true);
-  // });
 
   return out;
 }
@@ -177,11 +172,56 @@ export default function Table({ data = [] }) {
                 }}
               />
             </th>
-            <th>تاریخ</th>
-            <th>نام آگهی</th>
-            <th>فیلد</th>
-            <th>مقدار قدیمی</th>
-            <th>مقدار جدید</th>
+            <th>
+              {" "}
+              <SortButtons
+                order={state.sorts.date}
+                onSort={(order) => {
+                  dispatch({ type: "SORT", by: "date", order });
+                }}
+              />
+              تاریخ
+            </th>
+            <th>
+              {" "}
+              <SortButtons
+                order={state.sorts.title}
+                onSort={(order) => {
+                  dispatch({ type: "SORT", by: "title", order });
+                }}
+              />
+              نام آگهی
+            </th>
+            <th>
+              {" "}
+              <SortButtons
+                order={state.sorts.field}
+                onSort={(order) => {
+                  dispatch({ type: "SORT", by: "field", order });
+                }}
+              />
+              فیلد
+            </th>
+            <th>
+              {" "}
+              <SortButtons
+                order={state.sorts.oldValue}
+                onSort={(order) => {
+                  dispatch({ type: "SORT", by: "oldValue", order });
+                }}
+              />
+              مقدار قدیمی
+            </th>
+            <th>
+              {" "}
+              <SortButtons
+                order={state.sorts.newValue}
+                onSort={(order) => {
+                  dispatch({ type: "SORT", by: "newValue", order });
+                }}
+              />
+              مقدار جدید
+            </th>
           </tr>
         </thead>
         <tbody>
