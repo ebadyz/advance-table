@@ -1,5 +1,12 @@
-import { Fragment, useReducer } from "react";
+import {
+  Fragment,
+  useReducer,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import { SortButtons } from "./SortButtons";
+import { updateQueryString } from "./utils";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {
@@ -19,6 +26,7 @@ function sortAndFilter(array, sorts, filters) {
   let out = array.slice();
 
   // Apply sorts
+  // !Buggy sort. Does NOT work with multiple criteria
   Object.keys(sorts).forEach((key) => {
     if (sorts[key] != null) {
       out = out.sort((a, b) => sortByOrder(a, b, key, sorts[key]));
@@ -39,26 +47,35 @@ function sortAndFilter(array, sorts, filters) {
 }
 
 export default function Table({ data = [] }) {
+  const searchParams = useRef(new URLSearchParams(window.location.search));
   const initialState = {
     data: data,
     // Sort state = ASC | DESC | null = null
     sorts: {
-      name: null,
-      date: null,
-      title: null,
-      field: null,
-      oldValue: null,
-      newValue: null,
+      name: searchParams.current.get("sort_name"),
+      date: searchParams.current.get("sort_date"),
+      title: searchParams.current.get("sort_title"),
+      field: searchParams.current.get("sort_field"),
+      oldValue: searchParams.current.get("sort_oldValue"),
+      newValue: searchParams.current.get("sort_newValue"),
     },
     filters: {
-      name: null,
-      date: null,
-      title: null,
-      field: null,
+      // TODO: loop here
+      name: searchParams.current.get("filter_name"),
+      date: searchParams.current.get("filter_date"),
+      title: searchParams.current.get("filter_title"),
+      field: searchParams.current.get("filter_field"),
     },
   };
+  console.log({ initialState });
   const reducer = (state, action) => {
     switch (action.type) {
+      case "SEARCH": {
+        return {
+          ...state,
+          data: sortAndFilter(data, state.sorts, state.filters),
+        };
+      }
       case "FILTER": {
         const newFilters = {
           ...state.filters,
@@ -91,7 +108,19 @@ export default function Table({ data = [] }) {
   };
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // sort and filter at first based on read query string
+  useLayoutEffect(() => {
+    dispatch({ type: "SEARCH" });
+  }, []);
+
+  // Update query string on state change
+  useEffect(() => {
+    const { filters, sorts } = state;
+    updateQueryString({ filters, sorts });
+  }, [state]);
+
   console.log(state);
+  // TODO: Make a table renderer
   return (
     <Fragment>
       <div style={{ display: "flex" }}>
@@ -101,7 +130,7 @@ export default function Table({ data = [] }) {
             type="text"
             name="name"
             id="name"
-            value={state.name}
+            defaultValue={state.filters.name}
             onChange={(e) =>
               dispatch({
                 type: "FILTER",
@@ -117,7 +146,7 @@ export default function Table({ data = [] }) {
             type="text"
             name="date"
             id="date"
-            value={state.date}
+            defaultValue={state.filters.date}
             onChange={(e) =>
               dispatch({
                 type: "FILTER",
@@ -133,7 +162,7 @@ export default function Table({ data = [] }) {
             type="text"
             name="title"
             id="title"
-            value={state.ad}
+            defaultValue={state.filters.title}
             onChange={(e) =>
               dispatch({
                 type: "FILTER",
@@ -149,7 +178,7 @@ export default function Table({ data = [] }) {
             type="text"
             name="field"
             id="field"
-            value={state.date}
+            defaultValue={state.filters.field}
             onChange={(e) =>
               dispatch({
                 type: "FILTER",
