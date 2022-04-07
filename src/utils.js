@@ -11,7 +11,7 @@ export function parseQueryKey(keyString) {
 export function updateQueryString({ filters, sorts }) {
   const newURL = new URL(window.location.href);
   // remove stale params
-  newURL.searchParams.forEach((param) => {
+  newURL.searchParams.forEach((_, param) => {
     newURL.searchParams.delete(param);
   });
 
@@ -27,5 +27,6 @@ export function updateQueryString({ filters, sorts }) {
       newURL.searchParams.set(makeQueryKey(key, "sort"), sorts[key]);
     }
   });
+
   window.history.pushState({ path: newURL.href }, "", newURL.href);
 }
