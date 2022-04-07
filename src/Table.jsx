@@ -9,6 +9,7 @@ import {
 import { SortButtons } from "./SortButtons";
 import { updateQueryString } from "./utils";
 import debounce from "lodash.debounce";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {
@@ -50,7 +51,7 @@ function sortAndFilter(array, sorts, filters) {
   return out;
 }
 
-export default function Table({ data = [] }) {
+export function Table({ data, loadMoreData, hasMore, total }) {
   const searchParams = useRef(new URLSearchParams(window.location.search));
   const initialState = {
     data: data,
@@ -73,7 +74,6 @@ export default function Table({ data = [] }) {
       field: searchParams.current.get("filter_field"),
     },
   };
-
   const reducer = (state, action) => {
     switch (action.type) {
       case "SEARCH": {
@@ -115,6 +115,20 @@ export default function Table({ data = [] }) {
           starred: { ...state.starred, [action.id]: true },
         };
       }
+      case "MORE_DATA": {
+        return {
+          ...state,
+          data: sortAndFilter(action.data, state.sorts, state.filters),
+        };
+      }
+      case "LOAD_MORE": {
+        return {
+          ...state,
+          data: state.data.concat(
+            state.data.map((x) => ({ ...x, id: x.id + Math.random() }))
+          ),
+        };
+      }
       default:
         return state;
     }
@@ -139,6 +153,13 @@ export default function Table({ data = [] }) {
   }, [state.starred]);
 
   // console.log(state);
+  // When new paginated data arrives, save it in the state
+  useEffect(() => {
+    console.log("data changed");
+    dispatch({ type: "MORE_DATA", data });
+  }, [data]);
+
+  console.log(state);
   // TODO: Make a table renderer
   return (
     <Fragment>
@@ -208,93 +229,95 @@ export default function Table({ data = [] }) {
           />
         </section>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>
-              نام{" "}
-              <SortButtons
-                order={state.sorts.name}
-                onSort={(order) => {
-                  debouncedDispatch({ type: "SORT", by: "name", order });
-                }}
-              />
-            </th>
-            <th>
-              {" "}
-              <SortButtons
-                order={state.sorts.date}
-                onSort={(order) => {
-                  debouncedDispatch({ type: "SORT", by: "date", order });
-                }}
-              />
-              تاریخ
-            </th>
-            <th>
-              {" "}
-              <SortButtons
-                order={state.sorts.title}
-                onSort={(order) => {
-                  debouncedDispatch({ type: "SORT", by: "title", order });
-                }}
-              />
-              نام آگهی
-            </th>
-            <th>
-              {" "}
-              <SortButtons
-                order={state.sorts.field}
-                onSort={(order) => {
-                  debouncedDispatch({ type: "SORT", by: "field", order });
-                }}
-              />
-              فیلد
-            </th>
-            <th>
-              {" "}
-              <SortButtons
-                order={state.sorts.oldValue}
-                onSort={(order) => {
-                  debouncedDispatch({ type: "SORT", by: "oldValue", order });
-                }}
-              />
-              مقدار قدیمی
-            </th>
-            <th>
-              {" "}
-              <SortButtons
-                order={state.sorts.newValue}
-                onSort={(order) => {
-                  debouncedDispatch({ type: "SORT", by: "newValue", order });
-                }}
-              />
-              مقدار جدید
-            </th>
-            <th>ستاره دار</th>
-          </tr>
-        </thead>
-        <tbody>
-          {state.data.map((row) => (
-            <tr key={row.id}>
-              <td>{row.name}</td>
-              <td>{row.date}</td>
-              <td>{row.title}</td>
-              <td>{row.field}</td>
-              <td>{row.old_value}</td>
-              <td>{row.new_value}</td>
-              <td>
-                <input
-                  type="checkbox"
-                  defaultChecked={state.starred?.hasOwnProperty(row.id)}
-                  onChange={() => {
-                    debouncedDispatch({ type: "STAR", id: row.id });
+      <InfiniteScroll
+        dataLength={total}
+        next={() => {
+          console.log("next");
+          dispatch({ type: "LOAD_MORE" });
+        }}
+        hasMore={hasMore}
+        loader={<div className="loader">Loading ...</div>}
+        endMessage={<p>The end</p>}
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>
+                نام{" "}
+                <SortButtons
+                  order={state.sorts.name}
+                  onSort={(order) => {
+                    dispatch({ type: "SORT", by: "name", order });
                   }}
                 />
-              </td>
+              </th>
+              <th>
+                {" "}
+                <SortButtons
+                  order={state.sorts.date}
+                  onSort={(order) => {
+                    dispatch({ type: "SORT", by: "date", order });
+                  }}
+                />
+                تاریخ
+              </th>
+              <th>
+                {" "}
+                <SortButtons
+                  order={state.sorts.title}
+                  onSort={(order) => {
+                    dispatch({ type: "SORT", by: "title", order });
+                  }}
+                />
+                نام آگهی
+              </th>
+              <th>
+                {" "}
+                <SortButtons
+                  order={state.sorts.field}
+                  onSort={(order) => {
+                    dispatch({ type: "SORT", by: "field", order });
+                  }}
+                />
+                فیلد
+              </th>
+              <th>
+                {" "}
+                <SortButtons
+                  order={state.sorts.oldValue}
+                  onSort={(order) => {
+                    dispatch({ type: "SORT", by: "oldValue", order });
+                  }}
+                />
+                مقدار قدیمی
+              </th>
+              <th>
+                {" "}
+                <SortButtons
+                  order={state.sorts.newValue}
+                  onSort={(order) => {
+                    dispatch({ type: "SORT", by: "newValue", order });
+                  }}
+                />
+                مقدار جدید
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {state.data.map((row) => (
+              <tr key={row.id}>
+                <td>{row.name}</td>
+                <td>{row.date}</td>
+                <td>{row.title}</td>
+                <td>{row.field}</td>
+                <td>{row.old_value}</td>
+                <td>{row.new_value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </InfiniteScroll>
     </Fragment>
   );
 }
