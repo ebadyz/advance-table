@@ -51,7 +51,7 @@ export default function Table({ data = [] }) {
   const initialState = {
     data: data,
     // TODO: initialize from local storage
-    starred: [],
+    starred: JSON.parse(localStorage.getItem("starred")),
     // Sort state = ASC | DESC | null = null
     sorts: {
       name: searchParams.current.get("sort_name"),
@@ -107,7 +107,7 @@ export default function Table({ data = [] }) {
       case "STAR": {
         return {
           ...state,
-          starred: state.starred.concat(action.id),
+          starred: { ...state.starred, [action.id]: true },
         };
       }
       default:
@@ -126,6 +126,11 @@ export default function Table({ data = [] }) {
     const { filters, sorts } = state;
     updateQueryString({ filters, sorts });
   }, [state]);
+
+  // Persist starred items to localstorage
+  useEffect(() => {
+    localStorage.setItem("starred", JSON.stringify(state.starred));
+  }, [state.starred]);
 
   console.log(state);
   // TODO: Make a table renderer
@@ -274,6 +279,7 @@ export default function Table({ data = [] }) {
               <td>
                 <input
                   type="checkbox"
+                  defaultChecked={state.starred?.hasOwnProperty(row.id)}
                   onChange={() => {
                     dispatch({ type: "STAR", id: row.id });
                   }}
