@@ -4,9 +4,11 @@ import {
   useEffect,
   useRef,
   useLayoutEffect,
+  useCallback,
 } from "react";
 import { SortButtons } from "./SortButtons";
 import { updateQueryString } from "./utils";
+import debounce from "lodash.debounce";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {
@@ -20,6 +22,8 @@ function sortByOrder(a, b, prop, order) {
       return 0;
   }
 }
+
+const makeDebouncedDispatch = (dispatch) => debounce(dispatch, 300);
 
 function sortAndFilter(array, sorts, filters) {
   // TODO: expensive clone
@@ -69,7 +73,7 @@ export default function Table({ data = [] }) {
       field: searchParams.current.get("filter_field"),
     },
   };
-  console.log({ initialState });
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "SEARCH": {
@@ -79,6 +83,7 @@ export default function Table({ data = [] }) {
         };
       }
       case "FILTER": {
+        console.log(action);
         const newFilters = {
           ...state.filters,
           [action.by]: action.value || null,
@@ -115,6 +120,7 @@ export default function Table({ data = [] }) {
     }
   };
   const [state, dispatch] = useReducer(reducer, initialState);
+  const debouncedDispatch = useCallback(makeDebouncedDispatch(dispatch), []);
 
   // sort and filter at first based on read query string
   useLayoutEffect(() => {
@@ -125,14 +131,14 @@ export default function Table({ data = [] }) {
   useEffect(() => {
     const { filters, sorts } = state;
     updateQueryString({ filters, sorts });
-  }, [state]);
+  }, [state.filters, state.sorts]);
 
   // Persist starred items to localstorage
   useEffect(() => {
     localStorage.setItem("starred", JSON.stringify(state.starred));
   }, [state.starred]);
 
-  console.log(state);
+  // console.log(state);
   // TODO: Make a table renderer
   return (
     <Fragment>
@@ -144,13 +150,13 @@ export default function Table({ data = [] }) {
             name="name"
             id="name"
             defaultValue={state.filters.name}
-            onChange={(e) =>
-              dispatch({
+            onChange={(e) => {
+              debouncedDispatch({
                 type: "FILTER",
                 by: "name",
                 value: e.target.value,
-              })
-            }
+              });
+            }}
           />
         </section>
         <section style={{ display: "flex", flexDirection: "column" }}>
@@ -161,7 +167,7 @@ export default function Table({ data = [] }) {
             id="date"
             defaultValue={state.filters.date}
             onChange={(e) =>
-              dispatch({
+              debouncedDispatch({
                 type: "FILTER",
                 by: "date",
                 value: e.target.value,
@@ -177,7 +183,7 @@ export default function Table({ data = [] }) {
             id="title"
             defaultValue={state.filters.title}
             onChange={(e) =>
-              dispatch({
+              debouncedDispatch({
                 type: "FILTER",
                 by: "title",
                 value: e.target.value,
@@ -193,7 +199,7 @@ export default function Table({ data = [] }) {
             id="field"
             defaultValue={state.filters.field}
             onChange={(e) =>
-              dispatch({
+              debouncedDispatch({
                 type: "FILTER",
                 by: "field",
                 value: e.target.value,
@@ -210,7 +216,7 @@ export default function Table({ data = [] }) {
               <SortButtons
                 order={state.sorts.name}
                 onSort={(order) => {
-                  dispatch({ type: "SORT", by: "name", order });
+                  debouncedDispatch({ type: "SORT", by: "name", order });
                 }}
               />
             </th>
@@ -219,7 +225,7 @@ export default function Table({ data = [] }) {
               <SortButtons
                 order={state.sorts.date}
                 onSort={(order) => {
-                  dispatch({ type: "SORT", by: "date", order });
+                  debouncedDispatch({ type: "SORT", by: "date", order });
                 }}
               />
               تاریخ
@@ -229,7 +235,7 @@ export default function Table({ data = [] }) {
               <SortButtons
                 order={state.sorts.title}
                 onSort={(order) => {
-                  dispatch({ type: "SORT", by: "title", order });
+                  debouncedDispatch({ type: "SORT", by: "title", order });
                 }}
               />
               نام آگهی
@@ -239,7 +245,7 @@ export default function Table({ data = [] }) {
               <SortButtons
                 order={state.sorts.field}
                 onSort={(order) => {
-                  dispatch({ type: "SORT", by: "field", order });
+                  debouncedDispatch({ type: "SORT", by: "field", order });
                 }}
               />
               فیلد
@@ -249,7 +255,7 @@ export default function Table({ data = [] }) {
               <SortButtons
                 order={state.sorts.oldValue}
                 onSort={(order) => {
-                  dispatch({ type: "SORT", by: "oldValue", order });
+                  debouncedDispatch({ type: "SORT", by: "oldValue", order });
                 }}
               />
               مقدار قدیمی
@@ -259,7 +265,7 @@ export default function Table({ data = [] }) {
               <SortButtons
                 order={state.sorts.newValue}
                 onSort={(order) => {
-                  dispatch({ type: "SORT", by: "newValue", order });
+                  debouncedDispatch({ type: "SORT", by: "newValue", order });
                 }}
               />
               مقدار جدید
@@ -281,7 +287,7 @@ export default function Table({ data = [] }) {
                   type="checkbox"
                   defaultChecked={state.starred?.hasOwnProperty(row.id)}
                   onChange={() => {
-                    dispatch({ type: "STAR", id: row.id });
+                    debouncedDispatch({ type: "STAR", id: row.id });
                   }}
                 />
               </td>
