@@ -50,6 +50,8 @@ export default function Table({ data = [] }) {
   const searchParams = useRef(new URLSearchParams(window.location.search));
   const initialState = {
     data: data,
+    // TODO: initialize from local storage
+    starred: [],
     // Sort state = ASC | DESC | null = null
     sorts: {
       name: searchParams.current.get("sort_name"),
@@ -100,6 +102,12 @@ export default function Table({ data = [] }) {
           ...state,
           sorts: newSorts,
           data: sortAndFilter(data, newSorts, state.filters),
+        };
+      }
+      case "STAR": {
+        return {
+          ...state,
+          starred: state.starred.concat(action.id),
         };
       }
       default:
@@ -251,6 +259,7 @@ export default function Table({ data = [] }) {
               />
               مقدار جدید
             </th>
+            <th>ستاره دار</th>
           </tr>
         </thead>
         <tbody>
@@ -262,6 +271,14 @@ export default function Table({ data = [] }) {
               <td>{row.field}</td>
               <td>{row.old_value}</td>
               <td>{row.new_value}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  onChange={() => {
+                    dispatch({ type: "STAR", id: row.id });
+                  }}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
