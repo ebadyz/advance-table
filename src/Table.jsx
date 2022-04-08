@@ -13,10 +13,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {
-    case "ASC": {
+    case "DESC": {
       return a[prop] < b[prop] ? -1 : 1;
     }
-    case "DESC": {
+    case "ASC": {
       return a[prop] > b[prop] ? -1 : 1;
     }
     default:
