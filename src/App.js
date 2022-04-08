@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./global.css";
 import { Table } from "./Table";
 import data from "./data.json";
 import { useState } from "react";
