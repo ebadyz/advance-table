@@ -1,5 +1,5 @@
 import "./global.css";
-import { Table } from "./Table";
+import { Table } from "./components/table/Table";
 import data from "./data.json";
 import { useState } from "react";
 

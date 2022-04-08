@@ -6,11 +6,11 @@ import {
   useLayoutEffect,
   useCallback,
 } from "react";
-import { SortButtons } from "./SortButtons";
-import { updateQueryString } from "./utils";
+import { SortButtons } from "../sort-buttons/SortButtons";
+import { updateQueryString } from "../../utils";
 import debounce from "lodash.debounce";
 import { InfiniteScroll } from "react-simple-infinite-scroll";
-import "./table.css";
+import "../table/style.css";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {

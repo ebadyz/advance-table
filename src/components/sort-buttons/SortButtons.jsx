@@ -1,15 +1,13 @@
+import "../sort-buttons/style.css";
+
 export function SortButtons({ order = null, onSort }) {
   return (
-    <div>
+    <div className="container">
       <button
         onClick={() => {
           onSort("ASC");
         }}
-        style={{
-          border: "none",
-          backgroundColor: order === "ASC" ? "black" : "gray",
-          color: order === "ASC" ? "white" : "black",
-        }}
+        className={order === "ASC" ? "asc-style" : "desc-style"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -30,11 +28,7 @@ export function SortButtons({ order = null, onSort }) {
         onClick={() => {
           onSort("DESC");
         }}
-        style={{
-          border: "none",
-          backgroundColor: order === "DESC" ? "black" : "gray",
-          color: order === "DESC" ? "white" : "black",
-        }}
+        className={order === "DESC" ? "asc-style" : "desc-style"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

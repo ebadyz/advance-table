@@ -1,0 +1,18 @@
+.container {
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+.asc-style {
+  border: none;
+  background-color: var(--black, #000000);
+  color: var(--light-green, #2fbeaa);
+  cursor: pointer;
+}
+
+.desc-style {
+  border: none;
+  color: var(--black, #000000);
+  background-color: var(--light-green, #2fbeaa);
+  cursor: pointer;
+}

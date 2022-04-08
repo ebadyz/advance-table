@@ -1,50 +1,3 @@
-:root {
-  /* defined background colors */
-  --primary: #fed813;
-  --secondary: #37304b;
-  --light: #f5f5f5;
-  --white: #ffffff;
-  --black: #000000;
-}
-
-/* Bootstrap Strategy */
-.col-1 {
-  width: 8.33%;
-}
-.col-2 {
-  width: 16.66%;
-}
-.col-3 {
-  width: 25%;
-}
-.col-4 {
-  width: 33.33%;
-}
-.col-5 {
-  width: 41.66%;
-}
-.col-6 {
-  width: 50%;
-}
-.col-7 {
-  width: 58.33%;
-}
-.col-8 {
-  width: 66.66%;
-}
-.col-9 {
-  width: 75%;
-}
-.col-10 {
-  width: 83.33%;
-}
-.col-11 {
-  width: 91.66%;
-}
-.col-12 {
-  width: 100%;
-}
-
 .filter-section {
   display: flex;
   background-color: var(--light, #f5f5f5);
@@ -73,11 +26,13 @@
 }
 
 .table-container {
+  border-spacing: 2px;
   border-collapse: collapse;
   width: 100%;
 }
 
 .table-head {
+  padding: 0 100px;
   background-color: var(--secondary, #37304b);
 }
 
@@ -90,6 +45,10 @@ td {
   text-align: center;
   vertical-align: middle;
   height: 80px;
+  padding: 10px;
+  width: 300px;
+  max-width: 100%;
+  min-width: 200px;
 }
 .table-row > th:first-child,
 td:first-child {
@@ -98,7 +57,7 @@ td:first-child {
 
 .table-row > th {
   color: var(--light, #f5f5f5);
-  font-weight: 500;
+  font-weight: bold;
 }
 .table-row > td {
   color: var(--secondary, #343a40);
