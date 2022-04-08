@@ -165,7 +165,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
   return (
     <Fragment>
       <div className="filter-section">
-        <section className="col-4 input-wrapper">
+        <section className="col-3 textfield-wrapper">
           <label htmlFor="name">نام تغییر دهنده</label>
           <input
             type="text"
@@ -181,7 +181,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
             }}
           />
         </section>
-        <section className="col-2 input-wrapper">
+        <section className="col-2 textfield-wrapper">
           <label htmlFor="date">تاریخ</label>
           <input
             type="text"
@@ -197,7 +197,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
             }
           />
         </section>
-        <section className="col-3 input-wrapper">
+        <section className="col-3 textfield-wrapper">
           <label htmlFor="title">نام آگهی</label>
           <input
             type="text"
@@ -213,7 +213,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
             }
           />
         </section>
-        <section className="col-3 input-wrapper">
+        <section className="col-3 textfield-wrapper">
           <label htmlFor="field">فیلد</label>
           <input
             type="text"
@@ -240,8 +240,8 @@ export function Table({ data, loadMoreData, hasMore, total }) {
         loader={<div className="loader">Loading ...</div>}
         endMessage={<p>The end</p>}
       >
-        <table>
-          <thead>
+        <table className="table-container">
+          <thead className="table-head">
             <tr>
               <th>
                 نام تغییر دهنده{" "}
