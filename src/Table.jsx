@@ -301,6 +301,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 />
                 مقدار جدید
               </th>
+              <th>ستاره</th>
             </tr>
           </thead>
 
@@ -313,6 +314,9 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 <td>{row.field}</td>
                 <td>{row.old_value}</td>
                 <td>{row.new_value}</td>
+                <td><input type="checkbox" defaultChecked={state.starred?.hasOwnProperty(row.id)} onChange={() => {
+                  debouncedDispatch({type: 'STAR', id: row.id})
+                }} /></td>
               </tr>
             ))}
           </tbody>
