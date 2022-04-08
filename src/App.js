@@ -16,7 +16,7 @@ export default function App() {
       <Table
         data={state.data}
         total={data.length}
-        hasMore={true}
+        hasMore={state.page <= data.length / PER_PAGE}
         loadMoreData={() => {
           console.log("load more");
           setState({
