@@ -9,7 +9,7 @@ import {
 import { SortButtons } from "./SortButtons";
 import { updateQueryString } from "./utils";
 import debounce from "lodash.debounce";
-import InfiniteScroll from "react-infinite-scroll-component";
+import {InfiniteScroll} from "react-simple-infinite-scroll";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {
@@ -31,7 +31,6 @@ function sortAndFilter(array, sorts, filters) {
   let out = array.slice();
 
   // Apply sorts
-  // !Buggy sort. Does NOT work with multiple criteria
   Object.keys(sorts).forEach((key) => {
     if (sorts[key] != null) {
       out = out.sort((a, b) => sortByOrder(a, b, key, sorts[key]));
@@ -119,14 +118,6 @@ export function Table({ data, loadMoreData, hasMore, total }) {
         return {
           ...state,
           data: sortAndFilter(action.data, state.sorts, state.filters),
-        };
-      }
-      case "LOAD_MORE": {
-        return {
-          ...state,
-          data: state.data.concat(
-            state.data.map((x) => ({ ...x, id: x.id + Math.random() }))
-          ),
         };
       }
       default:
@@ -230,14 +221,12 @@ export function Table({ data, loadMoreData, hasMore, total }) {
         </section>
       </div>
       <InfiniteScroll
-        dataLength={total}
-        next={() => {
-          console.log("next");
-          dispatch({ type: "LOAD_MORE" });
+        onLoadMore={() => {
+          loadMoreData()
         }}
+        threshold={200}
+        throttle={100}
         hasMore={hasMore}
-        loader={<div className="loader">Loading ...</div>}
-        endMessage={<p>The end</p>}
       >
         <table>
           <thead>
