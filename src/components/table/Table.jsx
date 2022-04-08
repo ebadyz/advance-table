@@ -108,11 +108,21 @@ export function Table({ data, loadMoreData, hasMore }) {
           data: sortAndFilter(data, newSorts, state.filters),
         };
       }
-      case "STAR": {
-        return {
-          ...state,
-          starred: { ...state.starred, [action.id]: true },
-        };
+      case "TOGGLE_STAR": {
+        // Unstar an already starred item
+        if (state.starred?.hasOwnProperty(action.id)) {
+          return {
+            ...state,
+            starred: omit(state.starred, action.id),
+          };
+        }
+        // Start an item
+        else {
+          return {
+            ...state,
+            starred: { ...state.starred, [action.id]: true },
+          };
+        }
       }
       case "MORE_DATA": {
         return {
@@ -140,6 +150,7 @@ export function Table({ data, loadMoreData, hasMore }) {
 
   // Persist starred items to localstorage
   useEffect(() => {
+    console.log("persist starred");
     localStorage.setItem("starred", JSON.stringify(state.starred));
   }, [state.starred]);
 
@@ -300,7 +311,7 @@ export function Table({ data, loadMoreData, hasMore }) {
                     type="checkbox"
                     defaultChecked={state.starred?.hasOwnProperty(row.id)}
                     onChange={() => {
-                      debouncedDispatch({ type: "STAR", id: row.id });
+                      debouncedDispatch({ type: "TOGGLE_STAR", id: row.id });
                     }}
                   />
                 </td>
