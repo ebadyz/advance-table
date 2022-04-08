@@ -30,3 +30,8 @@ export function updateQueryString({ filters, sorts }) {
 
   window.history.pushState({ path: newURL.href }, "", newURL.href);
 }
+
+export function omit(obj, key) {
+  let {[key]: k, ...rest} = obj;
+  return rest;
+}

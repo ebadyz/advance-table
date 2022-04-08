@@ -7,9 +7,8 @@ import {
   useCallback,
 } from "react";
 import { SortButtons } from "./SortButtons";
-import { updateQueryString } from "./utils";
+import { updateQueryString, omit } from "./utils";
 import debounce from "lodash.debounce";
-// import InfiniteScroll from "react-infinite-scroll-component";
 import {InfiniteScroll} from "react-simple-infinite-scroll";
 
 function sortByOrder(a, b, prop, order) {
@@ -109,11 +108,21 @@ export function Table({ data, loadMoreData, hasMore, total }) {
           data: sortAndFilter(data, newSorts, state.filters),
         };
       }
-      case "STAR": {
-        return {
-          ...state,
-          starred: { ...state.starred, [action.id]: true },
-        };
+      case "TOGGLE_STAR": {
+        // Unstar an already starred item
+        if (state.starred?.hasOwnProperty(action.id)) {
+          return {
+            ...state,
+            starred: omit(state.starred, action.id)
+          }
+        }
+        // Start an item
+        else {
+          return {
+            ...state,
+            starred: { ...state.starred, [action.id]: true },
+          };
+        }
       }
       case "MORE_DATA": {
         return {
@@ -141,6 +150,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
 
   // Persist starred items to localstorage
   useEffect(() => {
+    console.log('persist starred')
     localStorage.setItem("starred", JSON.stringify(state.starred));
   }, [state.starred]);
 
@@ -305,7 +315,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 <td>{row.old_value}</td>
                 <td>{row.new_value}</td>
                 <td><input type="checkbox" defaultChecked={state.starred?.hasOwnProperty(row.id)} onChange={() => {
-                  debouncedDispatch({type: 'STAR', id: row.id})
+                  debouncedDispatch({type: 'TOGGLE_STAR', id: row.id})
                 }} /></td>
               </tr>
             ))}
