@@ -182,7 +182,7 @@ export function Table({ data, loadMoreData, hasMore }) {
         <section className="col-2 textfield-wrapper">
           <label htmlFor="date">تاریخ</label>
           <input
-            type="text"
+            type="date"
             name="date"
             id="date"
             defaultValue={state.filters.date}
