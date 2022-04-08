@@ -51,7 +51,7 @@ function sortAndFilter(array, sorts, filters) {
   return out;
 }
 
-export function Table({ data, loadMoreData, hasMore, total }) {
+export function Table({ data, loadMoreData, hasMore }) {
   const searchParams = useRef(new URLSearchParams(window.location.search));
   const initialState = {
     data: data,
@@ -83,7 +83,6 @@ export function Table({ data, loadMoreData, hasMore, total }) {
         };
       }
       case "FILTER": {
-        console.log(action);
         const newFilters = {
           ...state.filters,
           [action.by]: action.value || null,
@@ -144,19 +143,16 @@ export function Table({ data, loadMoreData, hasMore, total }) {
     localStorage.setItem("starred", JSON.stringify(state.starred));
   }, [state.starred]);
 
-  // console.log(state);
   // When new paginated data arrives, save it in the state
   useEffect(() => {
-    console.log("data changed");
     dispatch({ type: "MORE_DATA", data });
   }, [data]);
 
-  console.log(state);
   // TODO: Make a table renderer
   return (
     <Fragment>
       <div className="filter-section">
-        <section className="col-3 textfield-wrapper">
+        <section className="col-4 textfield-wrapper">
           <label htmlFor="name">نام تغییر دهنده</label>
           <input
             type="text"
@@ -231,18 +227,17 @@ export function Table({ data, loadMoreData, hasMore, total }) {
       >
         <table className="table-container">
           <thead className="table-head">
-            <tr>
+            <tr className="table-row">
               <th>
-                نام تغییر دهنده{" "}
                 <SortButtons
                   order={state.sorts.name}
                   onSort={(order) => {
                     dispatch({ type: "SORT", by: "name", order });
                   }}
                 />
+                نام تغییر دهنده
               </th>
               <th>
-                {" "}
                 <SortButtons
                   order={state.sorts.date}
                   onSort={(order) => {
@@ -252,7 +247,6 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 تاریخ
               </th>
               <th>
-                {" "}
                 <SortButtons
                   order={state.sorts.title}
                   onSort={(order) => {
@@ -262,7 +256,6 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 نام آگهی
               </th>
               <th>
-                {" "}
                 <SortButtons
                   order={state.sorts.field}
                   onSort={(order) => {
@@ -272,7 +265,6 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 فیلد
               </th>
               <th>
-                {" "}
                 <SortButtons
                   order={state.sorts.oldValue}
                   onSort={(order) => {
@@ -282,7 +274,6 @@ export function Table({ data, loadMoreData, hasMore, total }) {
                 مقدار قدیمی
               </th>
               <th>
-                {" "}
                 <SortButtons
                   order={state.sorts.newValue}
                   onSort={(order) => {
@@ -297,14 +288,14 @@ export function Table({ data, loadMoreData, hasMore, total }) {
 
           <tbody>
             {state.data.map((row) => (
-              <tr key={row.id}>
-                <td>{row.name}</td>
-                <td>{row.date}</td>
-                <td>{row.title}</td>
-                <td>{row.field}</td>
-                <td>{row.old_value}</td>
-                <td>{row.new_value}</td>
-                <td>
+              <tr key={row.id} className="table-row">
+                <td className="table-data">{row.name}</td>
+                <td className="table-data">{row.date}</td>
+                <td className="table-data">{row.title}</td>
+                <td className="table-data">{row.field}</td>
+                <td className="table-data">{row.old_value}</td>
+                <td className="table-data">{row.new_value}</td>
+                <td className="table-data">
                   <input
                     type="checkbox"
                     defaultChecked={state.starred?.hasOwnProperty(row.id)}
