@@ -13,18 +13,18 @@ export default function App() {
   });
   return (
     <div className="App">
-    <Table
-      data={state.data}
-      total={data.length}
-      hasMore={state.page <= data.length / PER_PAGE}
-      loadMoreData={() => {
-        console.log("load more");
-        setState({
-          page: state.page + 1,
-          data: data.slice(0, PER_PAGE * (state.page + 1)),
-        });
-      }}
-    />
+      <Table
+        data={state.data}
+        total={data.length}
+        hasMore={state.page <= data.length / PER_PAGE}
+        loadMoreData={() => {
+          console.log("load more");
+          setState({
+            page: state.page + 1,
+            data: data.slice(0, PER_PAGE * (state.page + 1)),
+          });
+        }}
+      />
     </div>
   );
 }
