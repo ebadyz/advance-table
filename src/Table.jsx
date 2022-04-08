@@ -9,6 +9,7 @@ import {
 import { SortButtons } from "./SortButtons";
 import { updateQueryString } from "./utils";
 import debounce from "lodash.debounce";
+// import InfiniteScroll from "react-infinite-scroll-component";
 import {InfiniteScroll} from "react-simple-infinite-scroll";
 
 function sortByOrder(a, b, prop, order) {
