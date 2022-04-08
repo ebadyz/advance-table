@@ -2,7 +2,6 @@ import "./styles.css";
 import { Table } from "./Table";
 import data from "./data.json";
 import { useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const PER_PAGE = 100;
 

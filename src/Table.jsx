@@ -185,7 +185,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
         <section style={{ display: "flex", flexDirection: "column" }}>
           <label htmlFor="date">تاریخ</label>
           <input
-            type="text"
+            type="date"
             name="date"
             id="date"
             defaultValue={state.filters.date}
