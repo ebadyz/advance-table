@@ -44,3 +44,26 @@
 .col-12 {
   width: 100%;
 }
+
+.filter-section {
+  display: flex;
+  background-color: var(--bg-light, #f5f5f5);
+  width: var(--w-100, 100%);
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0 1rem 0;
+}
+
+.input-wrapper > input {
+  outline: none;
+  border: 1px solid;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.input-wrapper:not(:last-child) {
+  margin-left: 2rem;
+}

@@ -10,6 +10,7 @@ import { SortButtons } from "./SortButtons";
 import { updateQueryString } from "./utils";
 import debounce from "lodash.debounce";
 import InfiniteScroll from "react-infinite-scroll-component";
+import "./table.css";
 
 function sortByOrder(a, b, prop, order) {
   switch (order) {
@@ -163,9 +164,9 @@ export function Table({ data, loadMoreData, hasMore, total }) {
   // TODO: Make a table renderer
   return (
     <Fragment>
-      <div style={{ display: "flex" }}>
-        <section style={{ display: "flex", flexDirection: "column" }}>
-          <label htmlFor="name">نام</label>
+      <div className="filter-section">
+        <section className="col-4 input-wrapper">
+          <label htmlFor="name">نام تغییر دهنده</label>
           <input
             type="text"
             name="name"
@@ -180,7 +181,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
             }}
           />
         </section>
-        <section style={{ display: "flex", flexDirection: "column" }}>
+        <section className="col-2 input-wrapper">
           <label htmlFor="date">تاریخ</label>
           <input
             type="text"
@@ -196,7 +197,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
             }
           />
         </section>
-        <section style={{ display: "flex", flexDirection: "column" }}>
+        <section className="col-3 input-wrapper">
           <label htmlFor="title">نام آگهی</label>
           <input
             type="text"
@@ -212,7 +213,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
             }
           />
         </section>
-        <section style={{ display: "flex", flexDirection: "column" }}>
+        <section className="col-3 input-wrapper">
           <label htmlFor="field">فیلد</label>
           <input
             type="text"
@@ -243,7 +244,7 @@ export function Table({ data, loadMoreData, hasMore, total }) {
           <thead>
             <tr>
               <th>
-                نام{" "}
+                نام تغییر دهنده{" "}
                 <SortButtons
                   order={state.sorts.name}
                   onSort={(order) => {
